@@ -51,4 +51,5 @@ public class AuthController {
             return new LoginResponse(true, "Inregistrare reusita",0);
     }
     
+    
 }
