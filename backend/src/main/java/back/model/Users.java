@@ -11,7 +11,6 @@ import jakarta.persistence.Table;
  * Tabelul de backend pentru users
  */
 @Entity
-@Table(name = "USERS")
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

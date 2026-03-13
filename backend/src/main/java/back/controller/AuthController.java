@@ -61,5 +61,4 @@ public class AuthController {
         return wordRepository.findAll();
     }
     
-    
 }
