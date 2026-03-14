@@ -10,7 +10,7 @@ function updateMap() {
     if (oldContainer) oldContainer.remove();
 
     // --- LOGICA MODIFICATĂ ---
-    if (level <= nivelDeDeblocat) { 
+    if (level <= nivelDeDeblocat) {
       // Dacă nivelul este terminat SAU este cel curent
       if (level < nivelDeDeblocat) {
         node.classList.add('completed');
@@ -26,7 +26,7 @@ function updateMap() {
 
       const startLabel = document.createElement('div');
       startLabel.className = 'start-bubble';
-      if(level == nivelDeDeblocat )
+      if (level == nivelDeDeblocat)
         nivelDeDeblocat = "START";
 
       const btnScris = document.createElement('div');
@@ -37,16 +37,16 @@ function updateMap() {
         window.location.href = `../html/nivel1.html?id=${level}`;
       };
 
-<<<<<<< HEAD
-            // Butonul SPEAK (te duce la nivel_audio.html)
-            const btnAudio = document.createElement('div');
-            btnAudio.className = 'sub-node audio';
-            btnAudio.innerText = 'SPEAK';
-            btnAudio.onclick = (e) => { 
-                e.stopPropagation(); 
-                window.location.href = `../html/niv1_vocal.html?id=${level}`; 
-            };
-=======
+
+      // Butonul SPEAK (te duce la nivel_audio.html)
+       btnAudio = document.createElement('div');
+      btnAudio.className = 'sub-node audio';
+      btnAudio.innerText = 'SPEAK';
+      btnAudio.onclick = (e) => {
+        e.stopPropagation();
+        window.location.href = `../html/niv1_vocal.html?id=${level}`;
+      };
+
       const btnAudio = document.createElement('div');
       btnAudio.className = 'sub-node audio';
       btnAudio.innerText = 'SPEAK';
@@ -54,7 +54,7 @@ function updateMap() {
         e.stopPropagation();
         window.location.href = `nivel_audio.html?id=${level}`;
       };
->>>>>>> ce9309a333bfc555b3eb25584718d3b6d8ccfc32
+
 
       const toggleMenu = (e) => {
         e.stopPropagation();
@@ -109,22 +109,22 @@ if (butonDeconectare) {
 
 // Înlocuiește partea de sus a fișierului pag.js
 async function incarcaHarta() {
-    const userId = localStorage.getItem('userId');
-    let nivelDeDeblocat = 1;
+  const userId = localStorage.getItem('userId');
+  let nivelDeDeblocat = 1;
 
-    if (userId) {
-        try {
-            // Cerem nivelul de la baza de date
-            const response = await fetch(`/api/user/progress/${userId}`);
-            const data = await response.json();
-            nivelDeDeblocat = data.currentLevel;
-            // Sincronizăm localstorage
-            localStorage.setItem('userProgress', nivelDeDeblocat);
-        } catch (e) {
-            console.log("Server inaccesibil, folosim date locale.");
-            nivelDeDeblocat = parseInt(localStorage.getItem('userProgress')) || 1;
-        }
+  if (userId) {
+    try {
+      // Cerem nivelul de la baza de date
+      const response = await fetch(`/api/user/progress/${userId}`);
+      const data = await response.json();
+      nivelDeDeblocat = data.currentLevel;
+      // Sincronizăm localstorage
+      localStorage.setItem('userProgress', nivelDeDeblocat);
+    } catch (e) {
+      console.log("Server inaccesibil, folosim date locale.");
+      nivelDeDeblocat = parseInt(localStorage.getItem('userProgress')) || 1;
     }
+  }
 
-    updateMap(nivelDeDeblocat);
+  updateMap(nivelDeDeblocat);
 }
