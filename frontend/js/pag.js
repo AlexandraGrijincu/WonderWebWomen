@@ -10,7 +10,7 @@ function updateMap() {
     if (oldContainer) oldContainer.remove();
 
     // --- LOGICA MODIFICATĂ ---
-    if (level <= nivelDeDeblocat) { 
+    if (level <= nivelDeDeblocat) {
       // Dacă nivelul este terminat SAU este cel curent
       if (level < nivelDeDeblocat) {
         node.classList.add('completed');
@@ -26,8 +26,9 @@ function updateMap() {
 
       const startLabel = document.createElement('div');
       startLabel.className = 'start-bubble';
-      if(level == nivelDeDeblocat )
-        nivelDeDeblocat = "START";
+      if (level === nivelDeDeblocat) {
+        startLabel.innerText = "START"; // Text pentru nivelul curent
+      }
 
       const btnScris = document.createElement('div');
       btnScris.className = 'sub-node scris';
@@ -42,7 +43,7 @@ function updateMap() {
       btnAudio.innerText = 'SPEAK';
       btnAudio.onclick = (e) => {
         e.stopPropagation();
-        window.location.href = `niv1_vocal.html?id=${level}`;
+        window.location.href = `nivel_audio.html?id=${level}`;
       };
 
       const toggleMenu = (e) => {
@@ -56,7 +57,8 @@ function updateMap() {
       startLabel.onclick = toggleMenu;
       node.onclick = toggleMenu;
 
-      container.appendChild(startLabel);
+      if(level == nivelDeDeblocat)
+        container.appendChild(startLabel);
       container.appendChild(btnScris);
       container.appendChild(btnAudio);
       node.appendChild(container);
@@ -98,22 +100,22 @@ if (butonDeconectare) {
 
 // Înlocuiește partea de sus a fișierului pag.js
 async function incarcaHarta() {
-    const userId = localStorage.getItem('userId');
-    let nivelDeDeblocat = 1;
+  const userId = localStorage.getItem('userId');
+  let nivelDeDeblocat = 1;
 
-    if (userId) {
-        try {
-            // Cerem nivelul de la baza de date
-            const response = await fetch(`/api/user/progress/${userId}`);
-            const data = await response.json();
-            nivelDeDeblocat = data.currentLevel;
-            // Sincronizăm localstorage
-            localStorage.setItem('userProgress', nivelDeDeblocat);
-        } catch (e) {
-            console.log("Server inaccesibil, folosim date locale.");
-            nivelDeDeblocat = parseInt(localStorage.getItem('userProgress')) || 1;
-        }
+  if (userId) {
+    try {
+      // Cerem nivelul de la baza de date
+      const response = await fetch(`/api/user/progress/${userId}`);
+      const data = await response.json();
+      nivelDeDeblocat = data.currentLevel;
+      // Sincronizăm localstorage
+      localStorage.setItem('userProgress', nivelDeDeblocat);
+    } catch (e) {
+      console.log("Server inaccesibil, folosim date locale.");
+      nivelDeDeblocat = parseInt(localStorage.getItem('userProgress')) || 1;
     }
+  }
 
-    updateMap(nivelDeDeblocat);
+  updateMap(nivelDeDeblocat);
 }
