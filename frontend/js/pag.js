@@ -31,7 +31,7 @@ function updateMap() {
 // Funcția care te trimite la pagină când dai click pe bulă
 function goToLevel(level) {
     if (level <= nivelDeDeblocat) {
-        window.location.href = `nivel${level}.html`;
+        window.location.href = `nivel.html`;
     } else {
         console.log("Nivel blocat!");
         // Opțional: poți adăuga un efect vizual de "shake" aici
