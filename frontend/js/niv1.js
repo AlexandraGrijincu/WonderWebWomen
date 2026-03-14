@@ -70,7 +70,7 @@ function joc() {
 
 async function pierdeViata() {
     if (pauzaFantoma) return;
-    pauzaFantoma = true; // Îngheață mișcarea în funcția joc()
+    pauzaFantoma = true;
 
 
     const fantomaImg = document.getElementById('fantoma');
@@ -78,10 +78,10 @@ async function pierdeViata() {
         fantomaImg.classList.add('fantoma-inghetata-verde');
     }
     personajElem.classList.add("stare-speciala-rosie");
-    await asteaptaMs(400); // Momentul impactului/atacului
+    await asteaptaMs(400);
     personajElem.classList.remove("stare-speciala-rosie");
 
-    // Actualizează inima (logica ta existentă)
+   
     const inima = document.getElementById(`inima-${vieti}`);
     if (inima) {
         inima.classList.remove('plina');
@@ -90,7 +90,7 @@ async function pierdeViata() {
 
     vieti--;
 
-    // Așteaptă 1 secundă pentru ca jucătorul să vadă greșeala
+    
     await asteaptaMs(200);
 
     if (fantomaImg) {
@@ -105,7 +105,7 @@ async function pierdeViata() {
     }
     else {
         verbenr++;
-        spawnFantoma(); // Aceasta va reseta poziția X și Y
+        spawnFantoma();
         requestAnimationFrame(joc);
     }
 }
@@ -137,19 +137,17 @@ function seteazaIdlePersonaj() {
 async function pornesteAnimatiePersonaj() {
     if (esteInAnimatiePersonaj) return;
     esteInAnimatiePersonaj = true;
-    pauzaFantoma = true; // Înghețăm fantoma pe ecran la succes
+    pauzaFantoma = true;
 
-    // Secvența de cadre înainte
     for (let i = 1; i < imaginiAnimatie.length; i++) {
         await asteaptaMs(100);
         personajElem.style.backgroundImage = `url('${imaginiAnimatie[i]}')`;
     }
 
     personajElem.classList.add("stare-speciala");
-    await asteaptaMs(500); // Momentul impactului/atacului
+    await asteaptaMs(500);
     personajElem.classList.remove("stare-speciala");
 
-    // Secvența de cadre înapoi
     for (let i = imaginiAnimatie.length - 2; i >= 0; i--) {
         await asteaptaMs(100);
         personajElem.style.backgroundImage = `url('${imaginiAnimatie[i]}')`;
@@ -157,16 +155,13 @@ async function pornesteAnimatiePersonaj() {
 
     seteazaIdlePersonaj();
     esteInAnimatiePersonaj = false;
-    pauzaFantoma = false; // Dezghețăm logica de mișcare
-
-    // Abia acum spawnăm fantoma nouă (fantoma veche dispare/se resetează)
-    if (gameActive && verbenr<10) {
+    pauzaFantoma = false;
+    if (gameActive && verbenr<11) {
         verbenr++;
         spawnFantoma();
     }
 }
 
-// --- INPUT & SCORE ---
 
 input.addEventListener('input', async () => {
     if (!gameActive || pauzaFantoma) return;
@@ -190,11 +185,10 @@ input.addEventListener('input', async () => {
         scor += 10;
         scorAfisat.innerText = "Scor: " + scor;
 
-        if (verbenr >=11 ) {
+        if (verbenr >=11 || scor>=100) {
             terminaJocul(true);
         } else {
             vitezaCurenta += 0.1;
-            // spawnFantoma() se apelează automat la finalul funcției pornesteAnimatiePersonaj()
         }
     }
 });
