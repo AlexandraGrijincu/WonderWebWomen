@@ -15,7 +15,8 @@ public class Gen {
     @ManyToOne
     @JoinColumn(name = "id_word", referencedColumnName = "id")
     private Word word;
-    private String paststimple;
+    private String roPastSimple;
+    private String enPastSimple;
 
     public int getId(){return id;}
     public void setId(int id){this.id=id;}
@@ -23,7 +24,10 @@ public class Gen {
     public int getIdWord(){return word.getId();}
     public void setIdWord(int id_word){word.setId(id_word);}
 
-    public String getPastSimple(){return paststimple;}
-    public void setPastSimple(String pastsimple){this.paststimple=pastsimple;}
+    public String getRoPastSimple(){return roPastSimple;}
+    public void setRoPastSimple(String roPastSimple){this.roPastSimple=roPastSimple;}
+
+    public String getEnPastSimple(){return enPastSimple;}
+     public void setEnPastSimple(String enPastSimple){this.enPastSimple=enPastSimple;}
 
 }
