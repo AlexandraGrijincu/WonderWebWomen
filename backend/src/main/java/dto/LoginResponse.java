@@ -3,12 +3,12 @@ package dto;
 public class LoginResponse {
     private boolean success;
     private String message;
-    private int id;
+    private int userId;
 
-    public LoginResponse(boolean success, String message,int id) {
+    public LoginResponse(boolean success, String message,int userId) {
         this.success = success;
         this.message = message;
-        this.id = id;
+        this.userId = userId;
     }
     public boolean isSuccess() {
         return success;
@@ -16,7 +16,7 @@ public class LoginResponse {
     public String getMessage() {
         return message;
     }
-    public int getId(){
-        return id;
+    public int getUserId(){
+        return userId;
     }
 }

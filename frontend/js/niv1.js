@@ -242,7 +242,7 @@ async function terminaJocul(aCastigat) {
 
         // Trimitem progresul la server
         await actualizeazaProgresServer(urmatorulNivel);
-        
+        await salveazaScorul(scor);
         // Actualizăm și local pentru o încărcare instantanee a hărții ulterior
         localStorage.setItem('userProgress', urmatorulNivel);
     } else {
@@ -250,26 +250,44 @@ async function terminaJocul(aCastigat) {
         titluFinal.style.color = "#ff4d4d";
         btnNext.classList.add('ascuns');
     }
-    await salveazaScorul(scor);
 }
 
-// Funcția care face legătura cu Backend-ul pentru progres
 async function actualizeazaProgresServer(nouNivel) {
-    const userId = localStorage.getItem('userId'); // Asigură-te că salvezi userId la login!
+    const userId = localStorage.getItem('userId');
     if (!userId) return;
 
     try {
-        await fetch('/api/user/update-progress', {
+        await fetch('http://localhost:8080/api/user/update-progress', { // Adaugă URL-ul complet dacă e cazul
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                userId: userId,
-                newLevel: nouNivel
+                userId: parseInt(userId), // Trimite-l ca număr
+                level: nouNivel // Numele trebuie să fie "level" ca în Java
             })
         });
-        console.log("Progres salvat pe server!");
     } catch (error) {
         console.error("Eroare la salvarea progresului:", error);
+    }
+}
+async function salveazaScorul(scorFinal) {
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+        console.error("Nu am găsit userId în localStorage!");
+        return;
+    }
+
+    try {
+        await fetch('http://localhost:8080/api/battle/save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                userId: parseInt(userId), 
+                score: scorFinal 
+            })
+        });
+        console.log("Scor salvat cu succes!");
+    } catch (e) { 
+        console.error("Eroare la conexiunea cu serverul pentru salvare scor"); 
     }
 }
 

@@ -23,7 +23,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 // AICI ESTE SCHIMBAREA CRUCIALĂ:
                 if (response.ok) {
                     // Serverul a returnat un status de succes (200 OK)
-                    // Înseamnă că userul și parola sunt corecte
+                    const data = await response.json(); 
+
+                    // 2. Acum poți folosi data.userIds
+                    localStorage.setItem('userId', data.userId);
+                    
                     window.location.href = "pag.html";
                 } else {
                     // Serverul a returnat o eroare (ex: 401 Unauthorized)
