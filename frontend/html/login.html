@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - Nebula Quest</title>
+    <title>Log In - Nebula Quest</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
@@ -21,55 +21,43 @@
             align-items: center;
             min-height: 100vh;
         }
-
-        .main-card {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(8px);
-            border-radius: 15px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-        }
     </style>
 </head>
 
 <body>
 
-    <a href="#" class="back-button">
+    <a href="home.html" class="back-button">
         <i class="fas fa-chevron-left"></i>
     </a>
 
     <div class="main-card">
         <div class="form-container">
-            <h2>Sign Up</h2>
+            <h2>Log In</h2>
 
             <form>
                 <div class="input-field">
-                    <input type="text" placeholder="User name">
-                    <i class="fas fa-user-circle"></i>
-                </div>
-
-                <div class="input-field">
-                    <input type="email" placeholder="Email">
+                    <input type="email" placeholder="Email" required>
                     <i class="fas fa-envelope"></i>
                 </div>
 
                 <div class="input-field">
-                    <input type="password" placeholder="Password">
+                    <input type="password" placeholder="Password" required>
                     <i class="fas fa-lock"></i>
                 </div>
 
-                <button type="submit" class="signup-btn">Sign Up</button>
+                <button type="submit" class="signup-btn">Log In</button>
             </form>
 
             <p class="already-account">
-                Already Have <a href="login.html">Account</a>?
+                Don't have an account? <a href="signup.html">Sign Up</a>
             </p>
         </div>
 
         <div class="image-container">
-            <div class="illustration">
-            </div>
+            <div class="illustration"></div>
         </div>
     </div>
+
     <script src="../js/script.js"></script>
 </body>
 

@@ -1,36 +1,41 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const signupForm = document.querySelector('form');
+    const form = document.querySelector('form');
 
-    signupForm.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Oprim reîncărcarea paginii
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault(); 
 
-        // Colectăm datele din input-uri
-        const username = document.querySelector('input[placeholder="User name"]').value;
-        const email = document.querySelector('input[placeholder="Email"]').value;
-        const password = document.querySelector('input[placeholder="Password"]').value;
+            const emailInput = document.querySelector('input[type="email"]').value;
+            const passwordInput = document.querySelector('input[type="password"]').value;
 
-        const userData = { username, email, password };
+            const payload = {
+                email: emailInput,
+                parola: passwordInput
+            };
 
-        try {
-            // Trimitem datele către server (înlocuiește URL-ul când ai backend-ul gata)
-            const response = await fetch('http://localhost:3000/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(userData)
-            });
+            const isLoginPage = document.title.toLowerCase().includes("log in") || 
+                               form.querySelector('button').innerText.toLowerCase().includes("log in");
+            
+            const endpoint = isLoginPage ? 'http://localhost:8080/api/login' : 'http://localhost:8080/api/register';
 
-            const result = await response.json();
+            try {
+                // Trimitem datele în fundal (fără să blocăm utilizatorul cu alerte)
+                await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
 
-            if (response.ok) {
-                alert("Cont creat cu succes!");
-            } else {
-                alert("Eroare: " + result.message);
+                // Te trimite DIRECT la home, fără niciun mesaj
+                window.location.href = "home.html"; 
+
+            } catch (error) {
+                console.error("Eroare server:", error);
+                // Chiar dacă serverul e oprit, te trimitem la home (pentru testare)
+                window.location.href = "home.html"; 
             }
-        } catch (error) {
-            console.error("Eroare la conectarea cu serverul:", error);
-            alert("Serverul nu răspunde. Asigură-te că backend-ul este pornit!");
-        }
-    });
+        });
+    }
 });

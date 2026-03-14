@@ -1,17 +1,15 @@
 package back.controller;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import back.model.Users;
 import back.model.Word;
@@ -20,6 +18,7 @@ import back.repository.WordRepository;
 import dto.LoginRequest;
 import dto.LoginResponse;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api")
 public class AuthController {
@@ -53,8 +52,17 @@ public class AuthController {
             Users newUser = new Users();
             newUser.setEmail(request.getEmail());
             newUser.setParola(request.getParola());
-            userRepository.save(newUser);
-            return new LoginResponse(true, "Inregistrare reusita",0);
+
+            newUser.setUsername(request.getEmail().split("@")[0]);
+            newUser.setNivel(1);
+
+            try {
+                userRepository.save(newUser);
+                return new LoginResponse(true, "Inregistrare reusita", newUser.getId());
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new LoginResponse(false, "Eroare baza de date: " + e.getMessage(),0);
+            }
     }
     @GetMapping("/getWordsall")
     public List<Word> getWordsall() {
