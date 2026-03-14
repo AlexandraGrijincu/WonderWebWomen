@@ -45,7 +45,7 @@ function updateMap() {
             btnAudio.innerText = 'SPEAK';
             btnAudio.onclick = (e) => { 
                 e.stopPropagation(); 
-                window.location.href = `nivel_audio.html?id=${level}`; 
+                window.location.href = `../html/niv1_vocal.html?id=${level}`; 
             };
 
             // Funcția de deschidere/închidere meniu (Toggle)
