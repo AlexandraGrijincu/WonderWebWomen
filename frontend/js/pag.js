@@ -42,7 +42,7 @@ function updateMap() {
       btnAudio.innerText = 'SPEAK';
       btnAudio.onclick = (e) => {
         e.stopPropagation();
-        window.location.href = `nivel_audio.html?id=${level}`;
+        window.location.href = `niv1_vocal.html?id=${level}`;
       };
 
       const toggleMenu = (e) => {
