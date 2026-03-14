@@ -1,27 +1,67 @@
 <!DOCTYPE html>
 <html lang="ro">
-    <head>
+
+<head>
     <meta charset="UTF-8">
     <title>Nivel</title>
     <link rel="stylesheet" href="../css/style.css">
 
-    <style>
+</head>
 
-    </style>
+<body>
 
-    </head>
-    <body>
-        
-        <div class="fundal_nivel"></div>
-        <div class="container-viata">
-            <div id="inima-1" class="inima plina"></div>
-            <div id="inima-2" class="inima plina"></div>
-            <div id="inima-3" class="inima plina"></div>
+    <div class="fundal_nivel"></div>
+    <div class="container-viata">
+        <div id="inima-1" class="inima plina"></div>
+        <div id="inima-2" class="inima plina"></div>
+        <div id="inima-3" class="inima plina"></div>
 
 
-        </div>
-        <div id="game-container">
+    </div>
+    <div id="game-container">
         <div id="personaj" class="idel"></div>
-        </div>
-    </body>
+    </div>
+    <script>
+       const imagini = [
+        "../images/idel.png",
+        "../images/001.png",
+        "../images/002.png",
+        "../images/003.png"
+    ];
+
+    const personaj = document.getElementById("personaj");
+    let esteInAnimatie = false;
+
+    const asteapta = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+    function seteazaIdle() {
+        personaj.style.backgroundImage = `url('${imagini[0]}')`;
+    }
+    seteazaIdle();
+
+    document.addEventListener("click", async function () {
+        if (esteInAnimatie) return;
+
+        esteInAnimatie = true;
+        for (let i = 1; i < imagini.length; i++) {
+            await asteapta(150);
+            personaj.style.backgroundImage = `url('${imagini[i]}')`;
+        }
+
+        personaj.classList.add("stare-speciala");
+
+        await asteapta(1000);
+
+        personaj.classList.remove("stare-speciala");
+        for (let i = imagini.length - 2; i >= 0; i--) {
+            await asteapta(150);
+            personaj.style.backgroundImage = `url('${imagini[i]}')`;
+        }
+        seteazaIdle();
+
+        esteInAnimatie = false;
+    });
+    </script>
+</body>
+
 </html>
