@@ -1,36 +1,45 @@
 document.addEventListener('DOMContentLoaded', () => {
     const signupForm = document.querySelector('form');
 
-    signupForm.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Oprim reîncărcarea paginii
+    if (signupForm) {
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Nu lăsa pagina să se reîncarce
 
-        // Colectăm datele din input-uri
-        const username = document.querySelector('input[placeholder="User name"]').value;
-        const email = document.querySelector('input[placeholder="Email"]').value;
-        const password = document.querySelector('input[placeholder="Password"]').value;
+            // 1. Luăm valorile din input-uri
+            // Verifică dacă în HTML ai <input type="email"> și <input type="password">
+            const emailInput = document.querySelector('input[type="email"]').value;
+            const passwordInput = document.querySelector('input[type="password"]').value;
 
-        const userData = { username, email, password };
+            // 2. Construim obiectul (Cheile trebuie să fie identice cu LoginRequest.java)
+            const payload = {
+                email: emailInput,
+                parola: passwordInput
+            };
 
-        try {
-            // Trimitem datele către server (înlocuiește URL-ul când ai backend-ul gata)
-            const response = await fetch('http://localhost:3000/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(userData)
-            });
+            console.log("Trimitem datele către server:", payload);
 
-            const result = await response.json();
+            try {
+                // 3. Trimitem cererea către adresa Spring Boot
+                const response = await fetch('http://localhost:8080/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
 
-            if (response.ok) {
-                alert("Cont creat cu succes!");
-            } else {
-                alert("Eroare: " + result.message);
+                const data = await response.json(); // Aici primim LoginResponse
+
+                if (data.success) {
+                    alert("Bravo! " + data.message);
+                    window.location.href = "index.html"; // Mergem la login
+                } else {
+                    alert("Hopa: " + data.message);
+                }
+            } catch (error) {
+                console.error("Eroare critică:", error);
+                alert("Nu pot contacta serverul. Este pornit pe portul 8080?");
             }
-        } catch (error) {
-            console.error("Eroare la conectarea cu serverul:", error);
-            alert("Serverul nu răspunde. Asigură-te că backend-ul este pornit!");
-        }
-    });
+        });
+    }
 });
