@@ -1,21 +1,20 @@
 const verbeNivel3 = [
-    { ro: "Eu mergeam", en: "I was going" },
-    { ro: "Ea mânca", en: "she was eating" },
-    { ro: "Noi beam", en: "we were drinking" },
-    { ro: "Tu dormeai", en: "you were sleeping" },
-    { ro: "Ei vedeau", en: "they were seeing" },
-    { ro: "Voi vorbeați", en: "you were speaking" },
-    { ro: "Eu scriam", en: "I was writing" },
-    { ro: "Ea citea", en: "she was reading" },
-    { ro: "Noi alergam", en: "we were running" },
-    { ro: "Tu făceai", en: "you were doing" },
-    { ro: "El venea", en: "he was coming" },
-    { ro: "Ele cântau", en: "they were singing" },
-    { ro: "Eu lucram", en: "I was working" },
-    { ro: "Voi săreați", en: "you were jumping" },
-    { ro: "Ei auzeau", en: "they were hearing" }
+    { ro: "Eu merg (acum)", en: "i am going" },
+    { ro: "Ea mănâncă", en: "she is eating" },
+    { ro: "Noi bem", en: "we are drinking" },
+    { ro: "Tu dormi", en: "you are sleeping" },
+    { ro: "Ei văd", en: "they are seeing" },
+    { ro: "Voi vorbiți", en: "you are speaking" },
+    { ro: "Eu scriu", en: "i am writing" },
+    { ro: "Ea citește", en: "she is reading" },
+    { ro: "Noi alergăm", en: "we are running" },
+    { ro: "Tu faci", en: "you are doing" },
+    { ro: "El vine", en: "he is coming" },
+    { ro: "Ele cântă", en: "they are singing" },
+    { ro: "Eu lucrez", en: "i am working" },
+    { ro: "Voi săriți", en: "you are jumping" },
+    { ro: "Ei aud", en: "they are hearing" }
 ];
-
 let vieti = 3;
 let scor = 0;
 let verbenr = 1;
@@ -45,7 +44,7 @@ const imaginiAnimatie = ["../images/idel.png", "../images/001.png", "../images/0
 
 function spawnFantoma() {
     if (!gameActive) return;
-    verbCurent = verbe[Math.floor(Math.random() * verbe.length)];
+    verbCurent = verbeNivel3[Math.floor(Math.random() * verbeNivel3.length)];
     bubble.innerText = verbCurent.ro;
     pozitieX = -200;
     pozitieY = -100;

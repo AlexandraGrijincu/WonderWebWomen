@@ -105,7 +105,7 @@ async function pierdeViata() {
     }
     else {
         verbenr++;
-        spawnFantoma(); // Aceasta va reseta poziția X și Y
+        spawnFantoma(); 
         requestAnimationFrame(joc);
     }
 }
@@ -126,7 +126,6 @@ async function terminaJocul(aCastigat) {
     await salveazaScorul(scor);
 }
 
-// --- ANIMATIE PERSONAJ (MODIFICATĂ) ---
 
 const asteaptaMs = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
