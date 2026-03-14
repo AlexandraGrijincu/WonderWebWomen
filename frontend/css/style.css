@@ -132,3 +132,83 @@ form {
     background-color: #1a1a2e; 
     border-radius: 30px;
 }
+
+.fundal {
+            background-image: url("../images/poza_fundal.png");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            height: 100vh; 
+            width: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+  body{
+            margin: 0;
+        }
+
+        .buton_start{
+
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            margin-top:450px;
+            margin-left:100px;
+        }
+
+        .buton_start img{
+            width: 400px;
+            transition: transform 0.2s;
+        }
+
+        .buton_start img:hover{
+            transform: scale(1.1);
+        }
+
+.fundal_nivel {
+            background-image: url("../images/poza_fundal_nivel.png");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            height: 100vh; 
+            width: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+
+.container-viata{
+    position:fixed;
+    gap:10px;
+    flex-direction: row;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    z-index: 100;
+}
+
+.inima{
+    width: 80px;
+    height: 80px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    transition: transform 0.3s ease;
+}
+
+.inima.plina{
+    background-image: url("../images/poza_inima.png");
+}
+
+.inima.lovita{
+    background-image: url("../images/poza_inima2.png");
+    transform: scale(0.8);
+    filter: grayscale(100%);
+}
