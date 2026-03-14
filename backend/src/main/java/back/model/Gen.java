@@ -10,7 +10,7 @@ public class Gen {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Id
+
     private int id_word;
     private String paststimple;
 
