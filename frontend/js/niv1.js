@@ -12,13 +12,14 @@ const verbe = [
 // --- VARIABILE STARE ---
 let vieti = 3;
 let scor = 0;
+let verbenr = 1;
 let vitezaBaza = 1.0;
 let vitezaCurenta = vitezaBaza;
-let pozitieX = -200; 
-let pozitieY = -200; 
+let pozitieX = -200;
+let pozitieY = -200;
 let verbCurent = {};
 let gameActive = true;
-let esteInAnimatiePersonaj = false; 
+let esteInAnimatiePersonaj = false;
 let pauzaFantoma = false; // Variabilă pentru a îngheța fantoma în timpul animației
 
 // --- ELEMENTE DOM ---
@@ -40,8 +41,8 @@ function spawnFantoma() {
     if (!gameActive) return;
     verbCurent = verbe[Math.floor(Math.random() * verbe.length)];
     bubble.innerText = verbCurent.ro;
-    pozitieX = -200; 
-    pozitieY = -100;   
+    pozitieX = -200;
+    pozitieY = -100;
     input.value = "";
     input.focus();
 }
@@ -68,17 +69,44 @@ function joc() {
 }
 
 async function pierdeViata() {
+    if (pauzaFantoma) return;
+    pauzaFantoma = true; // Îngheață mișcarea în funcția joc()
+
+
+    const fantomaImg = document.getElementById('fantoma');
+    if (fantomaImg) {
+        fantomaImg.classList.add('fantoma-inghetata-verde');
+    }
+    personajElem.classList.add("stare-speciala-rosie");
+    await asteaptaMs(400); // Momentul impactului/atacului
+    personajElem.classList.remove("stare-speciala-rosie");
+
+    // Actualizează inima (logica ta existentă)
     const inima = document.getElementById(`inima-${vieti}`);
     if (inima) {
         inima.classList.remove('plina');
         inima.classList.add('lovita');
     }
+
     vieti--;
+
+    // Așteaptă 1 secundă pentru ca jucătorul să vadă greșeala
+    await asteaptaMs(200);
+
+    if (fantomaImg) {
+        fantomaImg.classList.remove('fantoma-inghetata-verde');
+    }
+    pauzaFantoma = false;
+    if(verbenr >=10){
+        terminaJocul(true);
+    }
     if (vieti <= 0) {
         terminaJocul(false);
-    } else {
-        spawnFantoma();
-        requestAnimationFrame(joc); 
+    }
+    else {
+        verbenr++;
+        spawnFantoma(); // Aceasta va reseta poziția X și Y
+        requestAnimationFrame(joc);
     }
 }
 
@@ -130,9 +158,12 @@ async function pornesteAnimatiePersonaj() {
     seteazaIdlePersonaj();
     esteInAnimatiePersonaj = false;
     pauzaFantoma = false; // Dezghețăm logica de mișcare
-    
+
     // Abia acum spawnăm fantoma nouă (fantoma veche dispare/se resetează)
-    if (gameActive) spawnFantoma(); 
+    if (gameActive && verbenr<10) {
+        verbenr++;
+        spawnFantoma();
+    }
 }
 
 // --- INPUT & SCORE ---
@@ -141,13 +172,25 @@ input.addEventListener('input', async () => {
     if (!gameActive || pauzaFantoma) return;
 
     if (input.value.toLowerCase().trim() === verbCurent.en) {
+
+        const fantomaImg = document.getElementById('fantoma');
+
+
+        await pornesteAnimatiePersonaj();
+        pauzaFantoma = true;
+
+        bubble.style.visibility = "hidden";
+        fantomaImg.classList.add("fantoma-rosie");
+        await asteaptaMs(200);
+        fantomaImg.classList.remove("fantoma-rosie");
+        await asteaptaMs(200);
+        pauzaFantoma = false;
+        bubble.style.visibility = "visible";
+    
         scor += 10;
         scorAfisat.innerText = "Scor: " + scor;
 
-        // Așteptăm să se termine animația ÎNAINTE de a reseta fantoma
-        await pornesteAnimatiePersonaj(); 
-
-        if (scor >= 100) {
+        if (verbenr >=11 ) {
             terminaJocul(true);
         } else {
             vitezaCurenta += 0.1;
@@ -174,8 +217,19 @@ setInterval(() => {
     frameVrajitoare = (frameVrajitoare + 1) % imaginiVrajitoare.length;
     const vImg = document.getElementById('vrajitoare');
     if (vImg) vImg.src = imaginiVrajitoare[frameVrajitoare];
-}, 150); // Am pus 150ms pentru o mișcare mai naturală
+}, 100); // Am pus 150ms pentru o mișcare mai naturală
 
+const butonIesire = document.getElementById('iesire');
+
+// Adăugăm evenimentul de click
+butonIesire.addEventListener('click', () => {
+    // Înlocuiește "selectie_nivele.html" cu numele paginii tale principale
+    const destinatie = butonIesire.getAttribute('href'); 
+    window.location.href = destinatie;
+});
+
+// Adăugăm și un mic efect de hover din cod (opțional, dacă vrei să se simtă interactiv)
+butonIesire.style.cursor = "pointer";
 // --- START ---
 seteazaIdlePersonaj();
 spawnFantoma();
