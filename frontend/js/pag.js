@@ -1,4 +1,3 @@
-// Preluăm progresul utilizatorului
 let nivelDeDeblocat = parseInt(localStorage.getItem('userProgress')) || 1;
 
 function updateMap() {
@@ -37,24 +36,13 @@ function updateMap() {
         window.location.href = `../html/nivel1.html?id=${level}`;
       };
 
-<<<<<<< HEAD
-            // Butonul SPEAK (te duce la nivel_audio.html)
-            const btnAudio = document.createElement('div');
-            btnAudio.className = 'sub-node audio';
-            btnAudio.innerText = 'SPEAK';
-            btnAudio.onclick = (e) => { 
-                e.stopPropagation(); 
-                window.location.href = `../html/niv1_vocal.html?id=${level}`; 
-            };
-=======
       const btnAudio = document.createElement('div');
       btnAudio.className = 'sub-node audio';
       btnAudio.innerText = 'SPEAK';
       btnAudio.onclick = (e) => {
         e.stopPropagation();
-        window.location.href = `nivel_audio.html?id=${level}`;
+        window.location.href = `niv1_vocal.html?id=${level}`;
       };
->>>>>>> ce9309a333bfc555b3eb25584718d3b6d8ccfc32
 
       const toggleMenu = (e) => {
         e.stopPropagation();
