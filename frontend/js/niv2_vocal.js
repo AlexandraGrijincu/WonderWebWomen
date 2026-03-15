@@ -1,21 +1,5 @@
 // --- DATE JOC ---
-const verbe = [
-    { ro: "Eu am mers", en: "i went" },
-    { ro: "Ea a mâncat", en: "she ate" },
-    { ro: "Noi am băut", en: "we drank" },
-    { ro: "Tu ai dormit", en: "you slept" },
-    { ro: "Ei au văzut", en: "they saw" },
-    { ro: "Voi ați vorbit", en: "you spoke" },
-    { ro: "Eu am scris", en: "i wrote" },
-    { ro: "Ea a citit", en: "she read" },
-    { ro: "Noi am alergat", en: "we ran" },
-    { ro: "Tu ai făcut", en: "you did" },
-    { ro: "El a venit", en: "he came" },
-    { ro: "Ele au cântat", en: "they sang" },
-    { ro: "Eu am lucrat", en: "i worked" },
-    { ro: "Voi ați sărit", en: "you jumped" },
-    { ro: "Ei au auzit", en: "they heard" }
-];
+const nivel2_verbe = [];
 
 
 // --- VARIABILE STARE ---
