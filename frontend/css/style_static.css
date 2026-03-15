@@ -1,0 +1,196 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.fundal_nivel {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: url('../images/poza_fundal_nivel.png') no-repeat center center;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    gap:40px;
+    align-items: center;
+}
+
+#personaj {
+    width: 500px;
+    height: 500px;
+    /* Am adăugat display block și am verificat calea */
+    display: block; 
+    background-image: url("../images/idel.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    z-index: 10;
+
+    /* Linie de test: dacă imaginea tot nu apare, vei vedea un chenar roșu */
+    /* border: 2px solid red; */ 
+}
+
+#chenar-central {
+    width: 500px;
+    height: 300px;
+    border: 3px dashed rgba(255, 255, 255, 0.4);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(4px);
+
+    /* ADAUGĂ ASTA PENTRU TEXT: */
+    display: flex;
+    justify-content: center; /* Centrează textul pe orizontală */
+    align-items: center;     /* Centrează textul pe verticală */
+    text-align: center;      /* Aliniază rândurile de text la mijloc */
+    color: white;            /* Culoarea textului */
+    padding: 20px;           /* Spațiu interior ca textul să nu atingă marginile */
+}
+
+#container-fantoma {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 250px;
+    margin-left: 130px;
+}
+
+#fantoma {
+    width: 200px;
+    height: auto;
+    animation: plutire 3s ease-in-out infinite;
+}
+
+@keyframes plutire {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+#bubble-cuvant {
+    background: white;
+    padding: 10px 20px;
+    border-radius: 15px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #333;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.zona-input {
+    position: absolute;
+    bottom: 50px;
+    left: 54%;
+    transform: translateX(-50%);
+}
+
+#raspuns-utilizator {
+    padding: 12px 25px;
+    font-size: 18px;
+    border-radius: 30px;
+    border: 2px solid white;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    text-align: center;
+}
+
+/* UI Elements */
+.container-viata {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.inima {
+    width: 80px;
+    height: 80px;
+    background: url("../images/poza_inima.png") no-repeat center/contain;
+}
+
+.inima.lovita {
+    filter: grayscale(1) opacity(0.3);
+}
+
+#scor {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px black;
+}
+
+#iesire {
+    position: fixed;
+    bottom: 10px;
+    right: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    background: rgba(0, 0, 0, 0.4); /* Un fundal semi-transparent */
+    padding: 10px 10px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.ascuns {
+    display: none !important;
+}
+
+#ecran-final {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.continut-final {
+    background: #232338;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    color: white;
+    border: 1px solid white;
+}
+
+.continut-final button {
+    padding: 10px 20px;
+    margin: 10px;
+    cursor: pointer;
+    border-radius: 10px;
+    border: none;
+}
+
+.continut-chenar h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.continut-chenar p {
+    font-size: 24px;
+    line-height: 1.5;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    margin-top: 15px;
+}
+
+#bubble-cuvant {
+    /* Facem bulele de pe fantomă puțin mai mari pentru infinitiv */
+    min-width: 100px;
+    text-align: center;
+    font-style: italic;
+}

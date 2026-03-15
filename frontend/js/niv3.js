@@ -1,268 +1,83 @@
-const verbe = [
-    { ro: "a merge", en: "to go" }, { ro: "a manca", en: "to eat" },
-    { ro: "a bea", en: "to drink" }, { ro: "a dormi", en: "to sleep" },
-    { ro: "a vedea", en: "to see" }, { ro: "a vorbi", en: "to speak" },
-    { ro: "a scrie", en: "to write" }, { ro: "a citi", en: "to read" },
-    { ro: "a alerga", en: "to run" }, { ro: "a face", en: "to do" },
-    { ro: "a veni", en: "to come" }, { ro: "a canta", en: "to sing" },
-    { ro: "a lucra", en: "to work" }, { ro: "a sari", en: "to jump" },
-    { ro: "a auzi", en: "to hear" }
+// Lista de date conectate
+const dateJoc = [
+    { infinitiv: "to go", pastSimple: "went", propozitie: "Yesterday, I .... to the park." },
+    { infinitiv: "to eat", pastSimple: "ate", propozitie: "She .... a delicious apple this morning." },
+    { infinitiv: "to read", pastSimple: "read", propozitie: "He .... that book last week." },
+    { infinitiv: "to drink", pastSimple: "drank", propozitie: "They .... all the orange juice." },
+    { infinitiv: "to see", pastSimple: "saw", propozitie: "I .... a shooting star last night." },
+    { infinitiv: "to write", pastSimple: "wrote", propozitie: "The student .... a long essay." },
+    { infinitiv: "to sleep", pastSimple: "slept", propozitie: "The cat .... all day long." },
+    { infinitiv: "to run", pastSimple: "ran", propozitie: "We .... to catch the bus." }
 ];
 
-// --- VARIABILE STARE ---
-let vieti = 3;
 let scor = 0;
-let verbenr = 1;
-let vitezaBaza = 1.0;
-let vitezaCurenta = vitezaBaza;
-let pozitieX = -200;
-let pozitieY = -200;
-let verbCurent = {};
-let gameActive = true;
-let esteInAnimatiePersonaj = false;
-let pauzaFantoma = false; // Variabilă pentru a îngheța fantoma în timpul animației
+let vieti = 3;
+let rundaCurenta = {};
 
-// --- ELEMENTE DOM ---
-const ghostCont = document.getElementById('container-fantoma');
+// Elemente DOM
 const input = document.getElementById('raspuns-utilizator');
 const bubble = document.getElementById('bubble-cuvant');
-const scorAfisat = document.getElementById('scor');
-const ecranFinal = document.getElementById('ecran-final');
-const titluFinal = document.getElementById('titlu-final');
-const scorTextFinal = document.getElementById('scor-final');
-const btnNext = document.getElementById('btn-next');
-const personajElem = document.getElementById("personaj");
+const textChenar = document.getElementById('propozitie-text');
+const scorElement = document.getElementById('scor');
 
-const imaginiAnimatie = ["../images/idel.png", "../images/001.png", "../images/002.png", "../images/003.png"];
+function nouaRunda() {
+    if (dateJoc.length === 0) {
+        terminaJocul(true);
+        return;
+    }
 
-// --- LOGICA JOCULUI ---
-
-function spawnFantoma() {
-    if (!gameActive) return;
-    verbCurent = verbe[Math.floor(Math.random() * verbe.length)];
-    bubble.innerText = verbCurent.ro;
-    pozitieX = -200;
-    pozitieY = -100;
+    rundaCurenta = dateJoc[Math.floor(Math.random() * dateJoc.length)];
+    bubble.innerText = rundaCurenta.infinitiv;
+    textChenar.innerText = rundaCurenta.propozitie;
+    
     input.value = "";
     input.focus();
 }
 
-function joc() {
-    if (!gameActive) return;
+input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        let raspuns = input.value.toLowerCase().trim();
+        let corect = rundaCurenta.pastSimple.toLowerCase();
 
-    // Dacă fantoma este în pauză (pentru animație), doar cerem următorul frame fără să mișcăm poziția
-    if (pauzaFantoma) {
-        requestAnimationFrame(joc);
-        return;
-    }
-
-    pozitieX += vitezaCurenta;
-    pozitieY += vitezaCurenta * 0.5;
-    ghostCont.style.right = pozitieX + "px";
-    ghostCont.style.top = pozitieY + "px";
-
-    if (pozitieX > window.innerWidth * 0.45) {
-        pierdeViata();
-    } else {
-        requestAnimationFrame(joc);
-    }
-}
-
-async function pierdeViata() {
-    if (pauzaFantoma) return;
-    pauzaFantoma = true; // Îngheață mișcarea în funcția joc()
-
-
-    const fantomaImg = document.getElementById('fantoma');
-    if (fantomaImg) {
-        fantomaImg.classList.add('fantoma-inghetata-verde');
-    }
-    personajElem.classList.add("stare-speciala-rosie");
-    await asteaptaMs(400); // Momentul impactului/atacului
-    personajElem.classList.remove("stare-speciala-rosie");
-
-    // Actualizează inima (logica ta existentă)
-    const inima = document.getElementById(`inima-${vieti}`);
-    if (inima) {
-        inima.classList.remove('plina');
-        inima.classList.add('lovita');
-    }
-
-    vieti--;
-
-    // Așteaptă 1 secundă pentru ca jucătorul să vadă greșeala
-    await asteaptaMs(200);
-
-    if (fantomaImg) {
-        fantomaImg.classList.remove('fantoma-inghetata-verde');
-    }
-    pauzaFantoma = false;
-    if(verbenr >=10){
-        terminaJocul(true);
-    }
-    if (vieti <= 0) {
-        terminaJocul(false);
-    }
-    else {
-        verbenr++;
-        spawnFantoma(); 
-        requestAnimationFrame(joc);
-    }
-}
-
-async function terminaJocul(aCastigat) {
-    gameActive = false;
-    ecranFinal.classList.remove('ascuns');
-    scorTextFinal.innerText = "Scor final: " + scor;
-    if (aCastigat) {
-        titluFinal.innerText = "Felicitări! Ai Câștigat!";
-        titluFinal.style.color = "#4caf50";
-        btnNext.classList.remove('ascuns');
-    } else {
-        titluFinal.innerText = "Ai pierdut!";
-        titluFinal.style.color = "#ff4d4d";
-        btnNext.classList.add('ascuns');
-    }
-    await salveazaScorul(scor);
-}
-
-
-const asteaptaMs = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-function seteazaIdlePersonaj() {
-    if (personajElem) personajElem.style.backgroundImage = `url('${imaginiAnimatie[0]}')`;
-}
-
-async function pornesteAnimatiePersonaj() {
-    if (esteInAnimatiePersonaj) return;
-    esteInAnimatiePersonaj = true;
-    pauzaFantoma = true; // Înghețăm fantoma pe ecran la succes
-
-    // Secvența de cadre înainte
-    for (let i = 1; i < imaginiAnimatie.length; i++) {
-        await asteaptaMs(100);
-        personajElem.style.backgroundImage = `url('${imaginiAnimatie[i]}')`;
-    }
-
-    personajElem.classList.add("stare-speciala");
-    await asteaptaMs(500);
-    personajElem.classList.remove("stare-speciala");
-
-    for (let i = imaginiAnimatie.length - 2; i >= 0; i--) {
-        await asteaptaMs(100);
-        personajElem.style.backgroundImage = `url('${imaginiAnimatie[i]}')`;
-    }
-
-    seteazaIdlePersonaj();
-    esteInAnimatiePersonaj = false;
-    pauzaFantoma = false;
-
-    if (gameActive && verbenr<10) {
-        verbenr++;
-        spawnFantoma();
-    }
-}
-
-
-input.addEventListener('input', async () => {
-    if (!gameActive || pauzaFantoma) return;
-
-    if (input.value.toLowerCase().trim() === verbCurent.en) {
-
-        const fantomaImg = document.getElementById('fantoma');
-
-
-        await pornesteAnimatiePersonaj();
-        pauzaFantoma = true;
-
-        bubble.style.visibility = "hidden";
-        fantomaImg.classList.add("fantoma-rosie");
-        await asteaptaMs(200);
-        fantomaImg.classList.remove("fantoma-rosie");
-        await asteaptaMs(200);
-        pauzaFantoma = false;
-        bubble.style.visibility = "visible";
-    
-        scor += 10;
-        scorAfisat.innerText = "Scor: " + scor;
-
-        if (verbenr >=11 ) {
-            terminaJocul(true);
+        if (raspuns === corect) {
+            scor += 10;
+            scorElement.innerText = "Scor: " + scor;
+            document.getElementById('container-fantoma').style.filter = "drop-shadow(0 0 20px #4caf50)";
+            setTimeout(() => {
+                document.getElementById('container-fantoma').style.filter = "none";
+            }, 500);
+            nouaRunda();
         } else {
-            vitezaCurenta += 0.1;
+            pierdeViata();
         }
     }
 });
 
-async function salveazaScorul(scorFinal) {
-    try {
-        await fetch('/api/battle/save', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: 1, score: scorFinal, level: 1 })
-        });
-    } catch (e) { console.error("Eroare salvare scor"); }
-}
+function pierdeViata() {
+    const inima = document.getElementById(`inima-${vieti}`);
+    if (inima) {
+        inima.style.filter = "grayscale(1) opacity(0.3)";
+    }
+    
+    vieti--;
 
-const imaginiVrajitoare = ["../imagini/vrajitoare/v1.png", "../imagini/vrajitoare/v2.png", "../imagini/vrajitoare/v3.png"];
-let frameVrajitoare = 0;
-
-setInterval(() => {
-    frameVrajitoare = (frameVrajitoare + 1) % imaginiVrajitoare.length;
-    const vImg = document.getElementById('vrajitoare');
-    if (vImg) vImg.src = imaginiVrajitoare[frameVrajitoare];
-}, 100);
-
-const butonIesire = document.getElementById('iesire');
-
-butonIesire.addEventListener('click', () => {
-    const destinatie = butonIesire.getAttribute('href'); 
-    window.location.href = destinatie;
-});
-
-butonIesire.style.cursor = "pointer";
-
-async function terminaJocul(aCastigat) {
-    gameActive = false;
-    ecranFinal.classList.remove('ascuns');
-    scorTextFinal.innerText = "Scor final: " + scor;
-
-    if (aCastigat) {
-        titluFinal.innerText = "Felicitări! Ai Câștigat!";
-        titluFinal.style.color = "#4caf50";
-        btnNext.classList.remove('ascuns');
-        const params = new URLSearchParams(window.location.search);
-        let nivelCurent = parseInt(params.get('id')) || 1;
-        let urmatorulNivel = nivelCurent + 1;
-        await actualizeazaProgresServer(urmatorulNivel);
-        localStorage.setItem('userProgress', urmatorulNivel);
+    if (vieti <= 0) {
+        terminaJocul(false);
     } else {
-        titluFinal.innerText = "Ai pierdut!";
-        titluFinal.style.color = "#ff4d4d";
-        btnNext.classList.add('ascuns');
+        textChenar.style.color = "red";
+        setTimeout(() => { textChenar.style.color = "white"; }, 500);
+        nouaRunda();
     }
-    await salveazaScorul(scor);
-}
+} // <--- Aici lipsea aceasta acolada!
 
-async function actualizeazaProgresServer(nouNivel) {
-    const userId = localStorage.getItem('userId');
-    if (!userId) return;
-
-    try {
-        await fetch('/api/user/update-progress', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                userId: userId,
-                newLevel: nouNivel
-            })
-        });
-        console.log("Progres salvat pe server!");
-    } catch (error) {
-        console.error("Eroare la salvarea progresului:", error);
+function terminaJocul(aCastigat) {
+    const ecranFinal = document.getElementById('ecran-final');
+    if (ecranFinal) {
+        ecranFinal.classList.remove('ascuns');
+        document.getElementById('scor-final').innerText = "Scor final: " + scor;
+        document.getElementById('titlu-final').innerText = aCastigat ? "Felicitări!" : "Ai pierdut!";
     }
 }
 
-seteazaIdlePersonaj();
-spawnFantoma();
-requestAnimationFrame(joc);
+// Pornire joc
+nouaRunda();
