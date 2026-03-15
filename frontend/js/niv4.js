@@ -1,20 +1,5 @@
-const verbeNivel3 = [
-    { ro: "Eu merg (acum)", en: "i am going" },
-    { ro: "Ea mănâncă", en: "she is eating" },
-    { ro: "Noi bem", en: "we are drinking" },
-    { ro: "Tu dormi", en: "you are sleeping" },
-    { ro: "Ei văd", en: "they are seeing" },
-    { ro: "Voi vorbiți", en: "you are speaking" },
-    { ro: "Eu scriu", en: "i am writing" },
-    { ro: "Ea citește", en: "she is reading" },
-    { ro: "Noi alergăm", en: "we are running" },
-    { ro: "Tu faci", en: "you are doing" },
-    { ro: "El vine", en: "he is coming" },
-    { ro: "Ele cântă", en: "they are singing" },
-    { ro: "Eu lucrez", en: "i am working" },
-    { ro: "Voi săriți", en: "you are jumping" },
-    { ro: "Ei aud", en: "they are hearing" }
-];
+let nivel4_word = [];
+
 let vieti = 3;
 let scor = 0;
 let verbenr = 1;
@@ -44,7 +29,7 @@ const imaginiAnimatie = ["../images/idel.png", "../images/001.png", "../images/0
 
 function spawnFantoma() {
     if (!gameActive) return;
-    verbCurent = verbeNivel3[Math.floor(Math.random() * verbeNivel3.length)];
+    verbCurent = nivel4_word[Math.floor(Math.random() * nivel4_word.length)];
     bubble.innerText = verbCurent.ro;
     pozitieX = -200;
     pozitieY = -100;
@@ -272,7 +257,32 @@ async function actualizeazaProgresServer(nouNivel) {
     }
 }
 
+async function incarcaVerbeBD(){
+    try{
+        const raspuns=await fetch('http://localhost:8080/api/verbe');
+        const date=await raspuns.json();
+
+        console.log("Date primite de la Server",date);
+
+        nivel4_word=date.map(v => ({
+            ro: v.ro_present_continuous || "Lipsa text",
+            en: (v.en_present_continuous.toLowerCase() || "").trim()
+        }));
+
+        if(nivel4_word.length>0)
+        {
+            console.log("Verbele cu succes!");
+            spawnFantoma();
+            requestAnimationFrame(joc);
+        } else{
+            console.error("Serverul a trimis o lista goala");
+            bubble.innerText = "DB Goală!";
+        }
+    
+    } catch(error){
+        console.error("Eroare la fetch: ",error);
+    }
+}
 
 seteazaIdlePersonaj();
-spawnFantoma();
-requestAnimationFrame(joc);
+incarcaVerbeBD();
