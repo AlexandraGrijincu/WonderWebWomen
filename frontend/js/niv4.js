@@ -235,7 +235,7 @@ async function salveazaScorul(scorFinal) {
                 level: 4 
             })
         });
-        // Opțional: Actualizăm și local progresul ca să fie instantaneu
+        
         localStorage.setItem('userProgress', 5); 
     } catch (e) { 
         console.error("Eroare la salvarea progresului:", e); 
