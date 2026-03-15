@@ -137,4 +137,9 @@ public class AuthController {
     public List<nivel4_word> getVerbeNivel4() {
         return nivel4Repository.findAll();
     }
+
+    @GetMapping("/users/NivScore")
+    public List<Users> getNivScoreUsers() {
+        return userRepository.findAll();
+    }
 }
