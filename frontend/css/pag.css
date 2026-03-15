@@ -192,3 +192,24 @@ html, body {
     background: rgba(200, 0, 255, 0.9);
     transform: scale(1.05);
 }
+#leaderboard {
+    position: fixed;
+    bottom: 550px;
+    right: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 10px 10px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+#leaderboard{
+    background: rgba(3, 84, 18, 0.6);
+}
+
+#leaderboard:hover {
+    background: rgba(12, 140, 36, 0.6);
+    transform: scale(1.05);
+}

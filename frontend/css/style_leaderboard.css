@@ -81,3 +81,25 @@
     overflow-y: auto;
     padding-right: 8px;
 }
+
+.separator-leaderboard {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0 10px 0;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.separator-leaderboard::before,
+.separator-leaderboard::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+}
+
+.separator-leaderboard span {
+    padding: 0 10px;
+}
