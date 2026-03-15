@@ -1,83 +1,168 @@
-// Lista de date conectate
-const dateJoc = [
-    { infinitiv: "to go", pastSimple: "went", propozitie: "Yesterday, I .... to the park." },
-    { infinitiv: "to eat", pastSimple: "ate", propozitie: "She .... a delicious apple this morning." },
-    { infinitiv: "to read", pastSimple: "read", propozitie: "He .... that book last week." },
-    { infinitiv: "to drink", pastSimple: "drank", propozitie: "They .... all the orange juice." },
-    { infinitiv: "to see", pastSimple: "saw", propozitie: "I .... a shooting star last night." },
-    { infinitiv: "to write", pastSimple: "wrote", propozitie: "The student .... a long essay." },
-    { infinitiv: "to sleep", pastSimple: "slept", propozitie: "The cat .... all day long." },
-    { infinitiv: "to run", pastSimple: "ran", propozitie: "We .... to catch the bus." }
+// --- CONFIGURARE DATE NIVEL ---
+const exercitii = [
+    { text: "The student .... a long essay.", raspuns: "wrote", infinitiv: "to write" },
+    { text: "She .... to the market yesterday.", raspuns: "went", infinitiv: "to go" },
+    { text: "They .... all the water.", raspuns: "drank", infinitiv: "to drink" },
+    { text: "I .... a big pizza last night.", raspuns: "ate", infinitiv: "to eat" },
+    { text: "He .... a beautiful song.", raspuns: "sang", infinitiv: "to sing" },
+    { text: "We .... a loud noise outside.", raspuns: "heard", infinitiv: "to hear" },
+    { text: "The boy .... over the fence.", raspuns: "jumped", infinitiv: "to jump" },
+    { text: "She .... her keys in the car.", raspuns: "left", infinitiv: "to leave" },
+    { text: "I .... a famous actor today.", raspuns: "saw", infinitiv: "to see" },
+    { text: "They .... a new house last year.", raspuns: "bought", infinitiv: "to buy" },
+    { text: "He .... the answer to the question.", raspuns: "knew", infinitiv: "to know" },
+    { text: "The teacher .... us a story.", raspuns: "told", infinitiv: "to tell" },
+    { text: "We .... a lot of photos on holiday.", raspuns: "took", infinitiv: "to take" },
+    { text: "She .... her homework very fast.", raspuns: "did", infinitiv: "to do" }
 ];
 
-let scor = 0;
+// --- VARIABILE STARE ---
+let indexCurent = 0;
 let vieti = 3;
-let rundaCurenta = {};
+let scor = 0;
+let esteInAnimatie = false;
 
-// Elemente DOM
-const input = document.getElementById('raspuns-utilizator');
-const bubble = document.getElementById('bubble-cuvant');
-const textChenar = document.getElementById('propozitie-text');
-const scorElement = document.getElementById('scor');
+// --- ELEMENTE DOM ---
+const personajElem = document.getElementById("personaj");
+const ghostCont = document.getElementById("container-fantoma");
+const bubbleCuvant = document.getElementById("bubble-cuvant");
+const chenarPropozitie = document.querySelector("#chenar-central p");
+const inputUtilizator = document.getElementById("raspuns-utilizator");
+const scorAfisat = document.getElementById("scor");
 
-function nouaRunda() {
-    if (dateJoc.length === 0) {
-        terminaJocul(true);
-        return;
-    }
+const imaginiAnimatie = ["../images/idel.png", "../images/001.png", "../images/002.png", "../images/003.png"];
 
-    rundaCurenta = dateJoc[Math.floor(Math.random() * dateJoc.length)];
-    bubble.innerText = rundaCurenta.infinitiv;
-    textChenar.innerText = rundaCurenta.propozitie;
+// --- LOGICA DE START ---
+function initNivel() {
+    incarcaExercitiu();
+    inputUtilizator.focus();
     
-    input.value = "";
-    input.focus();
+    inputUtilizator.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !esteInAnimatie) {
+            valideazaRaspuns();
+        }
+    });
 }
 
-input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-        let raspuns = input.value.toLowerCase().trim();
-        let corect = rundaCurenta.pastSimple.toLowerCase();
+function incarcaExercitiu() {
+    const ex = exercitii[indexCurent];
+    chenarPropozitie.innerText = ex.text;
+    bubbleCuvant.innerText = ex.infinitiv;
+    inputUtilizator.value = "";
+    
+    ghostCont.classList.remove("fantoma-dispare");
+    ghostCont.style.opacity = "1";
+}
 
-        if (raspuns === corect) {
-            scor += 10;
-            scorElement.innerText = "Scor: " + scor;
-            document.getElementById('container-fantoma').style.filter = "drop-shadow(0 0 20px #4caf50)";
-            setTimeout(() => {
-                document.getElementById('container-fantoma').style.filter = "none";
-            }, 500);
-            nouaRunda();
+async function valideazaRaspuns() {
+    if (esteInAnimatie) return;
+    
+    const ex = exercitii[indexCurent];
+    const raspunsCorect = ex.raspuns;
+    const raspunsDat = inputUtilizator.value.toLowerCase().trim();
+
+    if (raspunsDat === raspunsCorect) {
+        // --- CAZ: CORECT ---
+        scor += 10;
+        scorAfisat.innerText = "Scor: " + scor;
+        
+        await pornesteAnimatieVrajitoare(true);
+        ghostCont.classList.add("fantoma-dispare");
+        await asteaptaMs(500);
+        
+        if (scor >= 100){
+            terminaJocul(true);
+            return;
+        }
+
+        avanseazaJocul();
+
+    } else {
+        // --- CAZ: GREȘIT ---
+        esteInAnimatie = true; 
+
+        // 1. Animație baghetă roșie
+        await pornesteAnimatieVrajitoare(false);
+        
+        // 2. Arătăm răspunsul corect în chenar (fără să trecem încă la următoarea)
+        const textCuRaspuns = ex.text.replace("....", `[ ${raspunsCorect.toUpperCase()} ]`);
+        chenarPropozitie.innerHTML = `<span style="color: #ff4d4d; font-weight: bold;">${textCuRaspuns}</span>`;
+        
+        // 3. Scădem viața (fără să oprim jocul aici)
+        pierdeViata();
+
+        // 4. PAUZĂ: Userul vede răspunsul roșu timp de 2.5 secunde
+        await asteaptaMs(2500);
+        
+        esteInAnimatie = false;
+
+        // 5. Decizia finală: dacă mai are vieți continuă, dacă nu, game over
+        if (vieti > 0) {
+            avanseazaJocul();
         } else {
-            pierdeViata();
+            terminaJocul(false);
         }
     }
-});
+}
 
+function avanseazaJocul() {
+    indexCurent++;
+    if (indexCurent < exercitii.length) {
+        incarcaExercitiu();
+    } else {
+        terminaJocul(true);
+    }
+}
+
+// --- ANIMATIA VRAJITOAREI ---
+async function pornesteAnimatieVrajitoare(esteCorect) {
+    esteInAnimatie = true;
+    for (let i = 1; i < imaginiAnimatie.length; i++) {
+        personajElem.style.backgroundImage = `url('${imaginiAnimatie[i]}')`;
+        await asteaptaMs(80);
+    }
+
+    const clasaGlow = esteCorect ? "stare-speciala" : "stare-speciala-rosie";
+    personajElem.classList.add(clasaGlow);
+    await asteaptaMs(600); 
+
+    personajElem.classList.remove(clasaGlow);
+    for (let i = imaginiAnimatie.length - 2; i >= 0; i--) {
+        personajElem.style.backgroundImage = `url('${imaginiAnimatie[i]}')`;
+        await asteaptaMs(80);
+    }
+    esteInAnimatie = false;
+}
+
+// --- FUNCTIA PIERDE VIATA MODIFICATA ---
 function pierdeViata() {
     const inima = document.getElementById(`inima-${vieti}`);
     if (inima) {
-        inima.style.filter = "grayscale(1) opacity(0.3)";
+        inima.classList.remove('plina');
+        inima.classList.add('lovita');
     }
-    
     vieti--;
-
-    if (vieti <= 0) {
-        terminaJocul(false);
-    } else {
-        textChenar.style.color = "red";
-        setTimeout(() => { textChenar.style.color = "white"; }, 500);
-        nouaRunda();
-    }
-} // <--- Aici lipsea aceasta acolada!
+    // Observă că am șters condiția de terminaJocul de aici!
+}
 
 function terminaJocul(aCastigat) {
     const ecranFinal = document.getElementById('ecran-final');
-    if (ecranFinal) {
-        ecranFinal.classList.remove('ascuns');
-        document.getElementById('scor-final').innerText = "Scor final: " + scor;
-        document.getElementById('titlu-final').innerText = aCastigat ? "Felicitări!" : "Ai pierdut!";
+    const titluFinal = document.getElementById('titlu-final');
+    const scorFinal = document.getElementById('scor-final');
+    
+    ecranFinal.classList.remove('ascuns');
+    scorFinal.innerText = "Scor final: " + scor;
+    
+    if (aCastigat) {
+        titluFinal.innerText = "Felicitări! Ai învățat Past Simple!";
+        titluFinal.style.color = "#4caf50";
+        document.getElementById('btn-next').classList.remove('ascuns');
+    } else {
+        titluFinal.innerText = "Mai încearcă!";
+        titluFinal.style.color = "#ff4d4d";
     }
 }
 
-// Pornire joc
-nouaRunda();
+const asteaptaMs = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+window.onload = initNivel;

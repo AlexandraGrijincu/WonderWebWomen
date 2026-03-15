@@ -34,18 +34,26 @@
 #chenar-central {
     width: 500px;
     height: 300px;
-    border: 3px dashed rgba(255, 255, 255, 0.4);
+    
+    /* 1. Am schimbat 'dashed' în 'solid' și am făcut linia puțin mai subțire (2px) */
+    border: 2px solid rgba(255, 255, 255, 0.3); 
+    
     border-radius: 20px;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(4px);
+    
+    /* 2. Am scăzut puțin opacitatea fundalului pentru a lăsa blur-ul să fie mai vizibil */
+    background: rgba(255, 255, 255, 0.03); 
+    
+    /* 3. Am crescut blur-ul de la 4px la 12px pentru un efect de "sticlă înghețată" mai pronunțat */
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px); /* Compatibilitate pentru Safari/iOS */
 
-    /* ADAUGĂ ASTA PENTRU TEXT: */
     display: flex;
-    justify-content: center; /* Centrează textul pe orizontală */
-    align-items: center;     /* Centrează textul pe verticală */
-    text-align: center;      /* Aliniază rândurile de text la mijloc */
-    color: white;            /* Culoarea textului */
-    padding: 20px;           /* Spațiu interior ca textul să nu atingă marginile */
+    flex-direction: column; /* Adăugat pentru a așeza h2 și p unul sub altul corect */
+    justify-content: center; 
+    align-items: center;    
+    text-align: center;      
+    color: white;            
+    padding: 20px;           
 }
 
 #container-fantoma {
@@ -193,4 +201,23 @@
     min-width: 100px;
     text-align: center;
     font-style: italic;
+}
+/* Efect de strălucire verde pentru succes */
+.stare-speciala {
+    filter: drop-shadow(0 0 20px #06fc27) brightness(1.1);
+    transform: scale(1.05);
+    transition: 0.3s;
+}
+
+/* Efect de strălucire roșie pentru eroare */
+.stare-speciala-rosie {
+    filter: drop-shadow(0 0 20px #fc0606) brightness(0.8);
+    transform: scale(1.05);
+    transition: 0.3s;
+}
+
+.fantoma-dispare {
+    opacity: 0 !important;
+    transform: scale(0.2) translateY(-100px);
+    transition: all 0.6s ease-in;
 }
