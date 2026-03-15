@@ -215,32 +215,6 @@ butonIesire.addEventListener('click', () => {
 // Adăugăm și un mic efect de hover din cod (opțional, dacă vrei să se simtă interactiv)
 butonIesire.style.cursor = "pointer";
 
-async function terminaJocul(aCastigat) {
-    gameActive = false;
-    ecranFinal.classList.remove('ascuns');
-    scorTextFinal.innerText = "Scor final: " + scor;
-
-    if (aCastigat) {
-        titluFinal.innerText = "Felicitări! Ai Câștigat!";
-        titluFinal.style.color = "#4caf50";
-        btnNext.classList.remove('ascuns');
-
-        // Preluăm nivelul actual din URL (ex: ?id=1)
-        const params = new URLSearchParams(window.location.search);
-        let nivelCurent = parseInt(params.get('id')) || 1;
-        let urmatorulNivel = nivelCurent + 1;
-
-        // Trimitem progresul la server
-        await actualizeazaProgresServer(urmatorulNivel);
-        await salveazaScorul(scor);
-        // Actualizăm și local pentru o încărcare instantanee a hărții ulterior
-        localStorage.setItem('userProgress', urmatorulNivel);
-    } else {
-        titluFinal.innerText = "Ai pierdut!";
-        titluFinal.style.color = "#ff4d4d";
-        btnNext.classList.add('ascuns');
-    }
-}
 
 async function actualizeazaProgresServer(nouNivel) {
     const userId = localStorage.getItem('userId');
@@ -260,24 +234,23 @@ async function actualizeazaProgresServer(nouNivel) {
     }
 }
 async function salveazaScorul(scorFinal) {
-    const userId = localStorage.getItem('userId');
-    if (!userId) {
-        console.error("Nu am găsit userId în localStorage!");
-        return;
-    }
+    const userId = localStorage.getItem('userId'); // Preluăm ID-ul utilizatorului
+    if (!userId) return;
 
     try {
-        await fetch('http://localhost:8080/api/battle/save', {
+        await fetch('/api/battle/save', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
-                userId: parseInt(userId), 
-                score: scorFinal 
+                userId: userId, 
+                score: scorFinal, 
+                level: 2 // Nivelul curent care a fost terminat
             })
         });
-        console.log("Scor salvat cu succes!");
+        // Opțional: Actualizăm și local progresul ca să fie instantaneu
+        localStorage.setItem('userProgress', 3); 
     } catch (e) { 
-        console.error("Eroare la conexiunea cu serverul pentru salvare scor"); 
+        console.error("Eroare la salvarea progresului:", e); 
     }
 }
 
@@ -323,4 +296,31 @@ async function pornireJoc() {
     }
 }
 
+
+async function terminaJocul(aCastigat) {
+    gameActive = false;
+    ecranFinal.classList.remove('ascuns');
+    scorTextFinal.innerText = "Scor final: " + scor;
+
+    if (aCastigat) {
+        titluFinal.innerText = "Felicitări! Ai Câștigat!";
+        titluFinal.style.color = "#4caf50";
+        btnNext.classList.remove('ascuns');
+
+        // Preluăm nivelul actual din URL (ex: ?id=1)
+        const params = new URLSearchParams(window.location.search);
+        let nivelCurent = parseInt(params.get('id')) || 1;
+        let urmatorulNivel = nivelCurent + 1;
+
+        // Trimitem progresul la server
+        await actualizeazaProgresServer(urmatorulNivel);
+        await salveazaScorul(scor);
+        // Actualizăm și local pentru o încărcare instantanee a hărții ulterior
+        localStorage.setItem('userProgress', urmatorulNivel);
+    } else {
+        titluFinal.innerText = "Ai pierdut!";
+        titluFinal.style.color = "#ff4d4d";
+        btnNext.classList.add('ascuns');
+    }
+}
 pornireJoc();
