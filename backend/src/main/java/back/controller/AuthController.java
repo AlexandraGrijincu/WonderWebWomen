@@ -16,15 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import back.model.Users;
 import back.model.Word;
-import back.model.nivel4_word;
-import back.repository.Nivel4Repository;
 import back.repository.UserRepository;
 import back.repository.WordRepository;
 import back.service.ScorService;
 import dto.LoginRequest;
 import dto.LoginResponse;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api")
 public class AuthController {
@@ -51,21 +49,21 @@ public class AuthController {
 
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new LoginResponse(false, "Email not found", 0));
+                    .body(new LoginResponse(false, "Email not found", 0,0));
         }
 
         if (!user.getParola().equals(request.getParola())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new LoginResponse(false, "Wrong password", 0));
+                    .body(new LoginResponse(false, "Wrong password", 0,0));
         }
-        return ResponseEntity.ok(new LoginResponse(true, "Login succesful", user.getId()));
+        return ResponseEntity.ok(new LoginResponse(true, "Login succesful", user.getId(), user.getNivel()));
     }
 
     @PostMapping("/register")
     public ResponseEntity<LoginResponse> register(@RequestBody LoginRequest request) {
         if (userRepository.findByEmail(request.getEmail()) != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(new LoginResponse(false, "Email deja inregistrat", 0));
+                    .body(new LoginResponse(false, "Email deja inregistrat", 0,0));
         }
 
         Pattern pattern = Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$",
@@ -73,7 +71,7 @@ public class AuthController {
         Matcher matcher = pattern.matcher(request.getEmail());
         if (!matcher.find()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new LoginResponse(false, "Format email invalid", 0));
+                    .body(new LoginResponse(false, "Format email invalid", 0,0));
         }
 
         Users newUser = new Users();
@@ -86,11 +84,11 @@ public class AuthController {
         try {
             userRepository.save(newUser);
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(new LoginResponse(true, "Inregistrare reusita", newUser.getId()));
+                    .body(new LoginResponse(true, "Inregistrare reusita", newUser.getId(),0));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new LoginResponse(false, "Eroare baza de date: " + e.getMessage(), 0));
+                    .body(new LoginResponse(false, "Eroare baza de date: " + e.getMessage(), 0,0));
         }
     }
 
@@ -107,24 +105,27 @@ public class AuthController {
     }
 
     @PostMapping("/user/update-progress")
-    public ResponseEntity<String> updateProgress(@RequestBody ScoreRequest request) {
+    public ResponseEntity<?> updateProgress(@RequestBody ScoreRequest request) {
         try {
-            scorService.actualizeazaNivel(request.userId, request.level);
-            return ResponseEntity.ok("Progres actualizat!");
+            Users user = userRepository.findById(request.userId).orElse(null);
+
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            }
+
+            // Actualizăm nivelul
+            user.setNivel(request.level);
+
+            userRepository.save(user);
+
+            return ResponseEntity.ok("Nivel actualizat");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Eroare la update progres");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Eroare la actualizarea progresului");
         }
     }
-
     @GetMapping("/getWordsall")
     public List<Word> getWordsall() {
         return wordRepository.findAll();
-    }
-
-    @Autowired
-    private Nivel4Repository repository; 
-    @GetMapping("/verbe")
-    public List<nivel4_word> getVerbe() {
-        return repository.findAll();
     }
 }
